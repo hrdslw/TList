@@ -6,6 +6,13 @@ struct TNode {
 	T val;
 	T* pNext;
 };
+
+struct TMonom {
+	double Coeff;
+	int index; // "x^3 y^2 z^1 -> 321"
+};
+
+
 template <class T>
 class TList
 {
@@ -60,7 +67,7 @@ public:
 
 	void InsCurr(T _val) {
 		if (pCurr == pFirst)
-			InsFirst(_val);
+			this->InsFirst(_val);
 		else {
 			TNode<T>* tmp = new TNode<T>;
 			tmp->val = _val;
@@ -102,7 +109,7 @@ public:
 
 	void DelCurr() {
 		if (pCurr == pFirst)
-			DelFirst();
+			this->DelFirst();
 		else {
 			TNode<T>* tmp = pCurr;
 			pCurr = pCurr->pNext;
@@ -120,9 +127,69 @@ public:
 			tmp = pFirst;
 		}
 	}
+
+	void SetPose(int p) {
+		this->Reset();
+		int count = 0;
+		while (pCurr != pStop) {
+			for (int i = 0; i < p; i++)
+				this->GoNext();
+			count++;
+		}
+		if (count != p)
+		{ /*hz what to do here */ }
+	}
 	~TList() {
-		DelList();
+		this->DelList();
 	}
 
+};
+
+template <class T>
+class THeadList : public TList<T> {
+protected:
+	TNode<T>* pHead;
+public:
+	THeadList() {
+		pHead = new TNode<T>;
+		pHead = nullptr;
+		pHead->pNext = pFirst;
+		pStop = pFirst = pPr = pCurr = pLast = pHead;
+		pos = -1;
+		len = 0;
+	}
+	THeadList(const THeadList& l) {
+		pHead = nullptr;
+		TNode<T>* tmp = l.pFirst;
+		TNode<T>* i;
+		while (tmp != nullptr) {
+			i = new TNode<T>;
+			i->val = tmp->val;
+			if (l.pFirst == l.pHead) {
+				pFirst = pLast = pStop = pHead = i;
+			}
+			else {
+				pLast->pNext = i;
+				pLast = i;
+				pHead->pNext = pFirst;
+			}
+			tmp = tmp->pNext;
+		}
+		len = l.len;
+		pos = -1;
+		pStop = pHead;
+		
+		// seems right
+	}
+
+	~THeadList() {
+		TList<T>::DelList();
+		delete pHead;
+	}
+
+	void InsFirst(T val) : override {
+		TList<T>::InsFirst(val);
+		pHead->pNext = pFirst;
+	}
 };
 
