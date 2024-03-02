@@ -7,10 +7,7 @@ struct TNode {
 	T* pNext;
 };
 
-struct TMonom {
-	double Coeff;
-	int index; // "x^3 y^2 z^1 -> 321"
-};
+
 
 
 template <class T>
@@ -143,6 +140,11 @@ public:
 		this->DelList();
 	}
 
+};
+
+struct TMonom {
+	double Coeff;
+	int index; // "x^3 y^2 z^1 -> 321"
 };
 
 template <class T>
