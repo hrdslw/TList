@@ -128,9 +128,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="TList.h" />
+    <ClInclude Include="TPolinom.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TList.cpp" />
+    <ClCompile Include="TPolinom.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

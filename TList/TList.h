@@ -144,7 +144,12 @@ public:
 
 struct TMonom {
 	double Coeff;
-	int index; // "x^3 y^2 z^1 -> 321"
+	int Index; // "x^3 y^2 z^1 -> 321"
+public:
+	TMonom(int a, int b) {
+		Coeff = a;
+		Index = b;
+	}
 };
 
 template <class T>
@@ -153,7 +158,7 @@ protected:
 	TNode<T>* pHead;
 public:
 	THeadList() {
-		pHead = new TNode<T>;
+		//pHead = new TNode<T>;
 		pHead = nullptr;
 		pHead->pNext = pFirst;
 		pStop = pFirst = pPr = pCurr = pLast = pHead;
@@ -189,30 +194,30 @@ public:
 		delete pHead;
 	}
 
-	void InsFirst(T val) : override {
+	void InsFirst(T val)  {
 		TList<T>::InsFirst(val);
 		pHead->pNext = pFirst;
 	}
 
-	void InsLast(T val) : override {
+	void InsLast(T val)  {
 		TList<T>::InsLast(val);
 		pLast->pNext = pHead;
 	}
 
-	void InsCurr(T val) : override {
+	void InsCurr(T val)  {
 		TList<T>::InsCurr(val);
 	}
 
-	void DelFirst(T val) : override {
+	void DelFirst(T val)  {
 		TList<T>::DelFirst(val);
 		pHead->pNext = pFirst;
 	}
 
-	void DelCurr(T val) : override {
+	void DelCurr(T val)  {
 		TList<T>::DelCurr(val);
 	}
 
-	void DelLast(T val) : override {
+	void DelLast(T val)  {
 		TList<T>::Del Last(val);
 		pLast->pNext = pHead;
 	}

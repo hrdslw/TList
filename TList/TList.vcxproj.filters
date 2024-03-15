@@ -18,9 +18,15 @@
     <ClInclude Include="TList.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="TPolinom.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TList.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="TPolinom.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
