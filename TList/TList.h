@@ -194,31 +194,31 @@ public:
 		delete pHead;
 	}
 
-	void InsFirst(T val)  {
+	void InsFirst(T val) :override {
 		TList<T>::InsFirst(val);
 		pHead->pNext = pFirst;
 	}
 
-	void InsLast(T val)  {
+	void InsLast(T val) : override {
 		TList<T>::InsLast(val);
 		pLast->pNext = pHead;
 	}
 
-	void InsCurr(T val)  {
+	void InsCurr(T val) : override  {
 		TList<T>::InsCurr(val);
 	}
 
-	void DelFirst(T val)  {
+	void DelFirst(T val) : override  {
 		TList<T>::DelFirst(val);
 		pHead->pNext = pFirst;
 	}
 
-	void DelCurr(T val)  {
+	void DelCurr(T val) : override  {
 		TList<T>::DelCurr(val);
 	}
 
-	void DelLast(T val)  {
-		TList<T>::Del Last(val);
+	void DelLast(T val) : override  {
+		TList<T>::DelLast(val);
 		pLast->pNext = pHead;
 	}
 
