@@ -131,6 +131,7 @@
     <ClInclude Include="TPolinom.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="TList.cpp" />
     <ClCompile Include="TPolinom.cpp" />
   </ItemGroup>

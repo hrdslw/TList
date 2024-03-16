@@ -4,7 +4,7 @@
 template <class T>
 struct TNode {
 	T val;
-	T* pNext;
+	TNode* pNext;
 };
 
 
@@ -136,6 +136,10 @@ public:
 		if (count != p)
 		{ /*hz what to do here */ }
 	}
+	T GetCurr() {
+		return pCurr->val;
+	}
+
 	~TList() {
 		this->DelList();
 	}
@@ -146,9 +150,25 @@ struct TMonom {
 	double Coeff;
 	int Index; // "x^3 y^2 z^1 -> 321"
 public:
+	TMonom() {
+		Coeff = 0;
+		Index = -1;
+	}
 	TMonom(int a, int b) {
 		Coeff = a;
 		Index = b;
+	}
+	bool operator ==(TMonom& m) {
+		if (Coeff == m.Coeff) {
+			if (Index == m.Index)
+				return true;
+		}
+		return false;
+	}
+	bool operator !=(TMonom& m) {
+		if (*this == m)
+			return false;
+		return true;
 	}
 };
 
@@ -194,31 +214,31 @@ public:
 		delete pHead;
 	}
 
-	void InsFirst(T val) :override {
+	void InsFirst(T val)  {
 		TList<T>::InsFirst(val);
 		pHead->pNext = pFirst;
 	}
 
-	void InsLast(T val) : override {
+	void InsLast(T val)  {
 		TList<T>::InsLast(val);
 		pLast->pNext = pHead;
 	}
 
-	void InsCurr(T val) : override  {
+	void InsCurr(T val)   {
 		TList<T>::InsCurr(val);
 	}
 
-	void DelFirst(T val) : override  {
-		TList<T>::DelFirst(val);
+	void DelFirst() {
+		TList<T>::DelFirst();
 		pHead->pNext = pFirst;
 	}
 
-	void DelCurr(T val) : override  {
-		TList<T>::DelCurr(val);
+	void DelCurr()  {
+		TList<T>::DelCurr();
 	}
 
-	void DelLast(T val) : override  {
-		TList<T>::DelLast(val);
+	void DelLast()  {
+		TList<T>::DelLast();
 		pLast->pNext = pHead;
 	}
 
