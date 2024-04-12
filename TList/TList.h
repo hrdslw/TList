@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-
+using namespace std;
 template <class T>
 struct TNode {
 	T val;
@@ -14,7 +14,7 @@ template <class T>
 class TList
 {
 protected:
-	TNode<T>* pFirst, * pLast, * pStop /*pointer at end of list(=0)*/, * pCurr, pPr;
+	TNode<T>* pFirst, * pLast, * pStop /*pointer at end of list(=0)*/, * pCurr, * pPr;
 	int pos, len;
 public:
 	TList() {
@@ -43,28 +43,53 @@ public:
 		len = l.len;
 		pos = -1;
 		pStop = nullptr;
+		pLast->pNext = pStop;
 	}
 
-	void InsFirst(T _val) {
+	virtual void InsFirst(T _val) {
 		TNode<T>* tmp = new TNode<T>;
 		tmp->val = _val;
-		tmp->pNext = pFirst;
-		pFirst = tmp;
+		if (pFirst == nullptr) {
+			pFirst = tmp;
+			pLast = tmp;
+
+			pFirst->pNext = pStop;
+		}
+		else {
+			tmp->pNext = pFirst;
+			pFirst = tmp;
+		}
+
+		pCurr = pFirst;
+		pos = 0;
 		len++;
 	}
 
-	void InsLast(T _val) {
+	virtual void InsLast(T _val) {
 		TNode<T>* tmp = new TNode<T>;
 		tmp->val = _val;
 		tmp->pNext = pStop;
-		pLast->pNext = tmp;
+		if (pLast != nullptr) {
+			pLast->pNext = tmp;
+			if (pLast == pFirst)
+				pFirst->pNext = tmp;
+		}
 		pLast = tmp;
+		if (pFirst == nullptr) {
+			pFirst = tmp;
+			pCurr = pFirst; // обновляем pCurr, если это первый элемент
+			pos = 0;
+		}
 		len++;
 	}
 
-	void InsCurr(T _val) {
-		if (pCurr == pFirst)
+	virtual void InsCurr(T _val) {
+		if (pCurr == pFirst) {
 			this->InsFirst(_val);
+		}
+		else if (pCurr == nullptr) {
+			this->InsLast(_val);
+		}
 		else {
 			TNode<T>* tmp = new TNode<T>;
 			tmp->val = _val;
@@ -75,6 +100,76 @@ public:
 			pos++;
 		}
 	}
+
+	virtual void DelFirst() {
+		if (pFirst != pStop) {
+			TNode<T>* tmp = pFirst;
+			pFirst = pFirst->pNext;
+			delete tmp;
+			if (pFirst == nullptr) {
+				pLast = nullptr;
+				pCurr = nullptr;
+			}
+			else if (pCurr == tmp) {
+				pCurr = pFirst;
+			}
+			len--;
+		}
+	}
+
+	virtual void DelCurr() {
+		if (pCurr == pFirst) {
+			this->DelFirst();
+		}
+		else if (pCurr == pLast) 
+			this->DelLast();
+		else {
+			TNode<T>* tmp = pCurr;
+			pCurr = pCurr->pNext;
+			pPr->pNext = pCurr;
+			delete tmp;
+			len--;
+		}
+	}
+
+	virtual void DelLast()
+	{
+		if (len == 0) throw ("list is empty");
+		else
+		{
+			if (pLast == pFirst)
+			{
+				DelFirst();
+			}
+			{
+				if (pCurr == pLast)
+				{
+					TNode<T>* tmp = pCurr;
+					SetPos(pos - 1);
+					delete tmp;
+					pCurr->pNext = pStop;
+					pLast = pCurr;
+					len--;
+				}
+				else
+				{
+					int currPosition = pos;
+					Reset();
+					while (pos != len - 2)
+					{
+						GoNext();
+					}
+					pCurr->pNext = pStop;
+					delete pLast;
+					pLast = pCurr;
+					SetPos(currPosition);
+					len--;
+
+				}
+			}
+		}
+	}
+
 
 	void Reset() {
 		pCurr = pFirst;
@@ -94,50 +189,40 @@ public:
 		return (pStop == pCurr);
 	}
 
-	void DelFirst() {
-		if (pFirst != pStop) {
-			TNode<T>* tmp = pCurr;
-			pCurr = pCurr->pNext;
-			pPr = pStop;
-			delete tmp;
-			len--;
-		}
-	}
+	
 
-	void DelCurr() {
-		if (pCurr == pFirst)
-			this->DelFirst();
-		else {
-			TNode<T>* tmp = pCurr;
-			pCurr = pCurr->pNext;
-			pPr->pNext = pCurr;
-			delete tmp;
-			l--;
-		}
-	}
-
-	void DelList() {
-		TNode<T>* tmp;
+	virtual void DelList() {
+		TNode<T>* tmp = pFirst;
 		while (pFirst != pStop) {
 			pFirst = pFirst->pNext;
 			delete tmp;
 			tmp = pFirst;
 		}
+		pCurr = nullptr;
 	}
 
-	void SetPose(int p) {
-		this->Reset();
-		int count = 0;
-		while (pCurr != pStop) {
-			for (int i = 0; i < p; i++)
-				this->GoNext();
-			count++;
+	void SetPos(int position)//
+	{
+		if (position > len || position < 0)
+		{
+			throw ("wrong pos");
 		}
-		if (count != p)
-		{ /*hz what to do here */ }
+		Reset();
+		while (pos != position)
+		{
+			GoNext();
+		}
 	}
 	T GetCurr() {
 		return pCurr->val;
+	}
+
+	T GetFirst() {
+		return pFirst->val;
+	}
+
+	T GetLast() {
+		return pLast->val;
 	}
 
 	~TList() {
@@ -146,101 +231,4 @@ public:
 
 };
 
-struct TMonom {
-	double Coeff;
-	int Index; // "x^3 y^2 z^1 -> 321"
-public:
-	TMonom() {
-		Coeff = 0;
-		Index = -1;
-	}
-	TMonom(int a, int b) {
-		Coeff = a;
-		Index = b;
-	}
-	bool operator ==(TMonom& m) {
-		if (Coeff == m.Coeff) {
-			if (Index == m.Index)
-				return true;
-		}
-		return false;
-	}
-	bool operator !=(TMonom& m) {
-		if (*this == m)
-			return false;
-		return true;
-	}
-};
-
-template <class T>
-class THeadList : public TList<T> {
-protected:
-	TNode<T>* pHead;
-public:
-	THeadList() {
-		//pHead = new TNode<T>;
-		pHead = nullptr;
-		pHead->pNext = pFirst;
-		pStop = pFirst = pPr = pCurr = pLast = pHead;
-		pos = -1;
-		len = 0;
-	}
-	THeadList(const THeadList& l) {
-		pHead = nullptr;
-		TNode<T>* tmp = l.pFirst;
-		TNode<T>* i;
-		while (tmp != nullptr) {
-			i = new TNode<T>;
-			i->val = tmp->val;
-			if (l.pFirst == l.pHead) {
-				pFirst = pLast = pStop = pHead = i;
-			}
-			else {
-				pLast->pNext = i;
-				pLast = i;
-				pHead->pNext = pFirst;
-			}
-			tmp = tmp->pNext;
-		}
-		len = l.len;
-		pos = -1;
-		pStop = pHead;
-		
-		// seems right
-	}
-
-	~THeadList() {
-		TList<T>::DelList();
-		delete pHead;
-	}
-
-	void InsFirst(T val)  {
-		TList<T>::InsFirst(val);
-		pHead->pNext = pFirst;
-	}
-
-	void InsLast(T val)  {
-		TList<T>::InsLast(val);
-		pLast->pNext = pHead;
-	}
-
-	void InsCurr(T val)   {
-		TList<T>::InsCurr(val);
-	}
-
-	void DelFirst() {
-		TList<T>::DelFirst();
-		pHead->pNext = pFirst;
-	}
-
-	void DelCurr()  {
-		TList<T>::DelCurr();
-	}
-
-	void DelLast()  {
-		TList<T>::DelLast();
-		pLast->pNext = pHead;
-	}
-
-};
 
